@@ -1,14 +1,15 @@
 {
-  "name": "rollout",
-  "version": "1.0.0",
+  "name": "@rollout/cli",
+  "version": "0.0.1",
   "description": "A CLI for deploying static sites to rollout.sh",
-  "main": "index.js",
+  "main": "bin/rollout.js",
   "bin": {
     "rollout": "./bin/rollout.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node bin/rollout.js",
+    "dev": "node bin/rollout.js"
   },
   "keywords": [
     "deployment",
