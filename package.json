@@ -15,10 +15,63 @@
     "deployment",
     "static",
     "hosting",
-    "cli"
+    "cli",
+    "rollout",
+    "static-sites",
+    "cloudflare",
+    "r2",
+    "cdn"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": {
+    "name": "Rollout",
+    "email": "hello@rollout.sh",
+    "url": "https://rollout.sh"
+  },
+  "contributors": [
+    {
+      "name": "neerajsohal",
+      "email": "hello@neerajkumar.name",
+      "url": "https://neerajkumar.name"
+    }
+  ],
+  "homepage": "https://rollout.sh",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rollout-sh/cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rollout-sh/cli/issues",
+    "email": "support@rollout.sh"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/rollout-sh"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
+  "preferGlobal": true,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
   "dependencies": {
     "archiver": "^7.0.1",
     "axios": "^1.12.2",
