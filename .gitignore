@@ -30,4 +30,5 @@ Thumbs.db # Windows specific
 *.tmp
 *.bak
 *.swp
+test-sites/
 test-site/

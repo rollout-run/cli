@@ -11,8 +11,8 @@ const deployCommand = new Command('deploy');
 deployCommand
   .description('Deploy a static site to Rollout')
   .argument('[folder]', 'Folder to deploy', '.')
-  .option('-p, --project <name>', 'Project name')
-  .option('-d, --domain <domain>', 'Custom domain')
+  .option('-p, --project <name>', 'Project name (optional, auto-generated Heroku-style)')
+  .option('-d, --domain <domain>', 'Custom domain (optional)')
   .option('--commit <hash>', 'Git commit hash')
   .option('--branch <branch>', 'Git branch name')
   .action(async (folder, options) => {
@@ -42,44 +42,34 @@ deployCommand
 
       let projectName = options.project;
       
-      // If no project name provided, prompt for it
+      // Server will auto-generate project name if not provided
       if (!projectName) {
-        const { default: inquirer } = require('inquirer');
-        const answer = await inquirer.prompt([
-          {
-            type: 'input',
-            name: 'projectName',
-            message: 'Project name:',
-            validate: (input) => {
-              if (!input) return 'Project name is required';
-              if (!/^[a-z0-9-]+$/.test(input)) {
-                return 'Project name can only contain lowercase letters, numbers, and hyphens';
-              }
-              return true;
-            },
-          },
-        ]);
-        projectName = answer.projectName;
+        console.log(chalk.gray('No project name provided, server will generate one automatically'));
       }
 
-      // Validate project name
-      if (!/^[a-z0-9-]+$/.test(projectName)) {
+      // Validate project name if provided
+      if (projectName && !/^[a-z0-9-]+$/.test(projectName)) {
         console.error(chalk.red('✗ Project name can only contain lowercase letters, numbers, and hyphens'));
         process.exit(1);
       }
 
-      console.log(chalk.blue(`Deploying ${folderPath} to ${projectName}...`));
+      console.log(chalk.blue(`Deploying ${folderPath}${projectName ? ` to ${projectName}` : ''}...`));
 
       // Get or create project
       let project;
-      const projects = await api.getProjects();
-      project = projects.find(p => p.slug === projectName);
+      
+      if (projectName) {
+        // Look for existing project with this name
+        const projects = await api.getProjects();
+        project = projects.find(p => p.slug === projectName);
+      }
       
       if (!project) {
         const spinner = ora('Creating project...').start();
         try {
+          // Create project (server will generate name if not provided)
           project = await api.createProject(projectName, `Deployed from ${folderPath}`);
-          spinner.succeed('Project created');
+          spinner.succeed(`Project created: ${project.name}`);
         } catch (error) {
           spinner.fail('Failed to create project');
           throw error;
@@ -102,7 +92,7 @@ deployCommand
         deploySpinner.succeed('Deployment successful!');
         
         console.log(chalk.green('\n✓ Deployment completed successfully!'));
-        console.log(chalk.gray(`Project URL: https://${project.slug}.rollout.sh`));
+        console.log(chalk.gray(`Project URL: https://${project.slug}.local.rollout.run`));
         
         if (deployment.deployment_url) {
           console.log(chalk.gray(`Deployment URL: ${deployment.deployment_url}`));
@@ -160,5 +150,6 @@ function isIgnoredFile(filename) {
   const ext = path.extname(filename).toLowerCase();
   return ignoredExtensions.includes(ext) || ignoredFiles.includes(filename);
 }
+
 
 module.exports = deployCommand;
