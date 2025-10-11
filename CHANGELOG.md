@@ -1,3 +1,9 @@
+## 0.1.2 (2025-10-11)
+
+### Fix
+
+- added dotenv for dynamic config
+
 ## 0.1.1 (2025-10-11)
 
 ### Fix
