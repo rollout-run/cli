@@ -92,7 +92,7 @@ deployCommand
         deploySpinner.succeed('Deployment successful!');
         
         console.log(chalk.green('\n✓ Deployment completed successfully!'));
-        console.log(chalk.gray(`Project URL: https://${project.slug}.local.rollout.run`));
+        console.log(chalk.gray(`Project URL: ${api.getProjectUrl(project.slug)}`));
         
         if (deployment.deployment_url) {
           console.log(chalk.gray(`Deployment URL: ${deployment.deployment_url}`));

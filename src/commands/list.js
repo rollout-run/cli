@@ -30,7 +30,7 @@ listCommand
       
       projects.forEach((project, index) => {
         console.log(chalk.bold(`${index + 1}. ${project.name}`));
-        console.log(chalk.gray(`   URL: https://${project.slug}.rollout.sh`));
+        console.log(chalk.gray(`   URL: ${api.getProjectUrl(project.slug)}`));
         console.log(chalk.gray(`   Status: ${project.status}`));
         
         if (options.verbose) {

@@ -41,7 +41,7 @@ statusCommand
       }
 
       console.log(chalk.green(`\nProject: ${project.name}`));
-      console.log(chalk.gray(`URL: https://${project.slug}.rollout.sh`));
+      console.log(chalk.gray(`URL: ${api.getProjectUrl(project.slug)}`));
       console.log(chalk.gray(`Status: ${project.status}`));
       
       if (options.deployment) {

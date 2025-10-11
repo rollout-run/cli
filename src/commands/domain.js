@@ -127,7 +127,7 @@ domainCommand
       
       if (domains.length === 0) {
         console.log(chalk.yellow('No custom domains configured.'));
-        console.log(chalk.gray(`Default domain: https://${project.slug}.rollout.sh`));
+        console.log(chalk.gray(`Default domain: ${api.getProjectUrl(project.slug)}`));
         return;
       }
 
