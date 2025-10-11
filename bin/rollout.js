@@ -10,6 +10,7 @@ const packageJson = require('../package.json');
 
 // Import commands
 const loginCommand = require('../src/commands/login');
+const registerCommand = require('../src/commands/register');
 const logoutCommand = require('../src/commands/logout');
 const deployCommand = require('../src/commands/deploy');
 const listCommand = require('../src/commands/list');
@@ -25,6 +26,7 @@ program
 
 // Add commands
 program.addCommand(loginCommand);
+program.addCommand(registerCommand);
 program.addCommand(logoutCommand);
 program.addCommand(deployCommand);
 program.addCommand(listCommand);

@@ -74,6 +74,34 @@ class ApiClient {
     }
   }
 
+  async register(name, email, password) {
+    try {
+      const response = await this.client.post('/auth/register', {
+        name,
+        email,
+        password,
+        password_confirmation: password,
+      });
+      
+      const { token, user } = response.data;
+      this.setToken(token);
+      
+      return { token, user };
+    } catch (error) {
+      if (error.response?.status === 422) {
+        const errors = error.response.data.errors;
+        if (errors.email) {
+          throw new Error('Email already exists or is invalid');
+        }
+        if (errors.password) {
+          throw new Error('Password requirements not met');
+        }
+        throw new Error('Validation failed: ' + Object.values(errors).flat().join(', '));
+      }
+      throw new Error(error.response?.data?.message || 'Registration failed');
+    }
+  }
+
   async logout() {
     try {
       await this.client.post('/auth/logout');
@@ -204,7 +232,9 @@ class ApiClient {
   }
 
   getProjectUrl(slug) {
-    return `https://${slug}.${this.baseDomain}`;
+    // Use HTTP for local development domains to avoid SSL issues
+    const protocol = this.baseDomain.includes('local.') || this.baseDomain.includes('.test') ? 'http' : 'https';
+    return `${protocol}://${slug}.${this.baseDomain}`;
   }
 }
 
