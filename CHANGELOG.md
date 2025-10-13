@@ -1,3 +1,9 @@
+## 0.2.0-alpha.0 (2025-10-13)
+
+### Fix
+
+- updated version scheme to semver2
+
 ## 0.1.4-b1 (2025-10-11)
 
 ### Fix
