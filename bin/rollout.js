@@ -14,8 +14,9 @@ const registerCommand = require('../src/commands/register');
 const logoutCommand = require('../src/commands/logout');
 const deployCommand = require('../src/commands/deploy');
 const listCommand = require('../src/commands/list');
-const domainCommand = require('../src/commands/domain');
 const statusCommand = require('../src/commands/status');
+const historyCommand = require('../src/commands/history');
+const domainCommand = require('../src/commands/domain');
 
 const program = new Command();
 
@@ -30,8 +31,9 @@ program.addCommand(registerCommand);
 program.addCommand(logoutCommand);
 program.addCommand(deployCommand);
 program.addCommand(listCommand);
-program.addCommand(domainCommand);
 program.addCommand(statusCommand);
+program.addCommand(historyCommand);
+program.addCommand(domainCommand);
 
 // Global error handling
 program.exitOverride();

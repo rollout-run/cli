@@ -1,100 +1,86 @@
 const { Command } = require('commander');
+const fs = require('fs-extra');
+const path = require('path');
 const chalk = require('chalk');
 const ApiClient = require('../utils/api');
-
-function formatBytes(bytes) {
-  if (bytes === 0) return '0 B';
-  const units = ['B', 'KB', 'MB', 'GB'];
-  let i = 0;
-  while (bytes >= 1024 && i < units.length - 1) {
-    bytes /= 1024;
-    i++;
-  }
-  return `${bytes.toFixed(1)} ${units[i]}`;
-}
 
 const statusCommand = new Command('status');
 
 statusCommand
-  .description('Check deployment status')
-  .argument('<project>', 'Project name')
-  .option('-d, --deployment <id>', 'Specific deployment ID')
-  .action(async (projectName, options) => {
-    const api = new ApiClient();
-    
+  .description('Show current project status and last deployment')
+  .option('-v, --verbose', 'Show detailed information')
+  .action(async (options) => {
     try {
-      // Check if user is logged in
-      if (!api.token) {
-        console.error(chalk.red('✗ Please login first: rollout login'));
-        process.exit(1);
+      const currentDir = process.cwd();
+      const rolloutDir = path.join(currentDir, '.rollout');
+      const configPath = path.join(rolloutDir, 'config.json');
+      
+      // Check if .rollout directory exists
+      if (!await fs.pathExists(rolloutDir)) {
+        console.log(chalk.yellow('No .rollout directory found.'));
+        console.log(chalk.gray('Deploy a project first to create local tracking.'));
+        return;
       }
-
-      console.log(chalk.blue(`Checking status for project ${projectName}...`));
       
-      // Find project
-      const projects = await api.getProjects();
-      const project = projects.find(p => p.slug === projectName);
-      
-      if (!project) {
-        console.error(chalk.red(`✗ Project not found: ${projectName}`));
-        process.exit(1);
+      // Check if config exists
+      if (!await fs.pathExists(configPath)) {
+        console.log(chalk.yellow('No project configuration found.'));
+        console.log(chalk.gray('Deploy a project first to create local tracking.'));
+        return;
       }
-
-      console.log(chalk.green(`\nProject: ${project.name}`));
-      console.log(chalk.gray(`URL: ${api.getProjectUrl(project.slug)}`));
-      console.log(chalk.gray(`Status: ${project.status}`));
       
-      if (options.deployment) {
-        // Show specific deployment status
-        const deployment = await api.getDeploymentStatus(project.id, options.deployment);
+      const config = await fs.readJson(configPath);
+      const api = new ApiClient();
+      
+      console.log(chalk.blue('📊 Project Status\n'));
+      
+      // Show project info
+      console.log(chalk.bold('Project Information:'));
+      console.log(chalk.gray(`  Name: ${config.name}`));
+      console.log(chalk.gray(`  Slug: ${config.projectSlug}`));
+      console.log(chalk.gray(`  ID: ${config.projectId}`));
+      console.log(chalk.gray(`  URL: ${api.getProjectUrl(config.projectSlug)}`));
+      
+      if (config.lastDeployment) {
+        const lastDeploy = new Date(config.lastDeployment);
+        console.log(chalk.gray(`  Last Deployed: ${lastDeploy.toLocaleString()}`));
+      }
+      
+      // Show last deployment details
+      const deploymentsPath = path.join(rolloutDir, 'deployments.json');
+      let deployments = [];
+      if (await fs.pathExists(deploymentsPath)) {
+        deployments = await fs.readJson(deploymentsPath);
         
-        console.log(chalk.green(`\nDeployment ${deployment.version}:`));
-        console.log(chalk.gray(`Status: ${deployment.status}`));
-        console.log(chalk.gray(`Files: ${deployment.file_count}`));
-        console.log(chalk.gray(`Size: ${formatBytes(deployment.total_size)}`));
-        
-        if (deployment.deployed_at) {
-          console.log(chalk.gray(`Deployed: ${new Date(deployment.deployed_at).toLocaleString()}`));
-        }
-        
-        if (deployment.commit_hash) {
-          console.log(chalk.gray(`Commit: ${deployment.commit_hash}`));
-        }
-        
-        if (deployment.branch) {
-          console.log(chalk.gray(`Branch: ${deployment.branch}`));
-        }
-        
-      } else {
-        // Show latest deployment status
-        if (project.latest_deployment && project.latest_deployment.length > 0) {
-          const deployment = project.latest_deployment[0];
+        if (deployments.length > 0) {
+          const lastDeployment = deployments[0];
           
-          console.log(chalk.green(`\nLatest Deployment:`));
-          console.log(chalk.gray(`Version: ${deployment.version}`));
-          console.log(chalk.gray(`Status: ${deployment.status}`));
-          console.log(chalk.gray(`Files: ${deployment.file_count}`));
-          console.log(chalk.gray(`Size: ${formatBytes(deployment.total_size)}`));
+          console.log(chalk.bold('\nLast Deployment:'));
+          console.log(chalk.gray(`  Status: ${chalk.green('✓')} ${lastDeployment.status}`));
+          console.log(chalk.gray(`  Version: ${lastDeployment.version}`));
+          console.log(chalk.gray(`  Files: ${lastDeployment.files}`));
+          console.log(chalk.gray(`  Size: ${lastDeployment.size}`));
+          console.log(chalk.gray(`  URL: ${lastDeployment.url}`));
           
-          if (deployment.deployed_at) {
-            console.log(chalk.gray(`Deployed: ${new Date(deployment.deployed_at).toLocaleString()}`));
+          if (options.verbose) {
+            console.log(chalk.bold('\nDeployment History:'));
+            deployments.slice(0, 5).forEach((deployment, index) => {
+              const date = new Date(deployment.deployedAt).toLocaleString();
+              const status = deployment.status === 'success' ? chalk.green('✓') : chalk.red('✗');
+              console.log(chalk.gray(`  ${index + 1}. ${status} ${deployment.version} - ${date} (${deployment.files} files, ${deployment.size})`));
+            });
+            
+            if (deployments.length > 5) {
+              console.log(chalk.gray(`  ... and ${deployments.length - 5} more deployments`));
+            }
           }
-          
-          if (deployment.commit_hash) {
-            console.log(chalk.gray(`Commit: ${deployment.commit_hash}`));
-          }
-          
-          if (deployment.branch) {
-            console.log(chalk.gray(`Branch: ${deployment.branch}`));
-          }
-        } else {
-          console.log(chalk.yellow('\nNo deployments found.'));
-          console.log(chalk.gray('Deploy your first site with: rollout deploy'));
         }
       }
+      
+      console.log(chalk.gray(`\nTotal Deployments: ${deployments.length}`));
       
     } catch (error) {
-      console.error(chalk.red('✗ Failed to check status:'), error.message);
+      console.error(chalk.red('✗ Failed to get project status:'), error.message);
       process.exit(1);
     }
   });
