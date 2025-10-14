@@ -1,3 +1,10 @@
+## 0.2.0 (2025-10-14)
+
+### Fix
+
+- updated docs and code to reflect correct domains
+- fixed creation of new domain on every subsequent deployment
+
 ## 0.2.0-alpha.1 (2025-10-13)
 
 ## 0.2.0-alpha.0 (2025-10-13)
