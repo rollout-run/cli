@@ -19,7 +19,7 @@ Security vulnerabilities should be reported privately to prevent exploitation.
 
 ### 2. Report via email
 
-Send details to: **security@rollout.sh**
+Send details to: **security@rollout.run**
 
 Include the following information:
 
@@ -71,7 +71,7 @@ Include the following information:
 
 For security-related questions or concerns:
 
-- **Email**: security@rollout.sh
-- **Website**: https://rollout.sh
+- **Email**: security@rollout.run
+- **Website**: https://rollout.run
 
 Thank you for helping keep Rollout CLI secure! 🔒

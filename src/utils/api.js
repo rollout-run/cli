@@ -6,8 +6,8 @@ const FormData = require('form-data');
 
 class ApiClient {
   constructor() {
-    this.baseURL = process.env.ROLLOUT_API_URL || 'https://app.rollout.sh/api';
-    this.baseDomain = process.env.ROLLOUT_DOMAIN || 'rollout.sh';
+    this.baseURL = process.env.ROLLOUT_API_URL || 'https://app.rollout.run/api';
+    this.baseDomain = process.env.ROLLOUT_DOMAIN || 'rollout.run';
     this.token = this.getToken();
     
     this.client = axios.create({

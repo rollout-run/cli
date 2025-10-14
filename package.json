@@ -1,7 +1,7 @@
 {
-  "name": "@rollout/cli",
+  "name": "@rollout-run/cli",
   "version": "0.2.0-alpha.1",
-  "description": "A CLI for deploying static sites to rollout.sh",
+  "description": "A CLI for deploying static sites to rollout.run",
   "main": "bin/rollout.js",
   "bin": {
     "rollout": "./bin/rollout.js"
@@ -24,8 +24,8 @@
   ],
   "author": {
     "name": "Rollout",
-    "email": "hello@rollout.sh",
-    "url": "https://rollout.sh"
+    "email": "hello@rollout.run",
+    "url": "https://rollout.run"
   },
   "contributors": [
     {
@@ -34,18 +34,18 @@
       "url": "https://neerajkumar.name"
     }
   ],
-  "homepage": "https://rollout.sh",
+  "homepage": "https://rollout.run",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rollout-sh/cli.git"
+    "url": "https://github.com/rollout-run/cli.rollout.run.git"
   },
   "bugs": {
-    "url": "https://github.com/rollout-sh/cli/issues",
-    "email": "support@rollout.sh"
+    "url": "https://github.com/rollout-run/cli.rollout.run/issues",
+    "email": "support@rollout.run"
   },
   "funding": {
     "type": "individual",
-    "url": "https://github.com/sponsors/rollout-sh"
+    "url": "https://github.com/sponsors/rollout-run"
   },
   "license": "MIT",
   "engines": {

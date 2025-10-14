@@ -1,6 +1,6 @@
 # Rollout CLI
 
-A CLI for deploying static sites to rollout.sh
+A CLI for deploying static sites to rollout.run
 
 ## Installation
 

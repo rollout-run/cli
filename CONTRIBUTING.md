@@ -1,4 +1,4 @@
-# Contributing to @rollout/cli
+# Contributing to @rollout-run/cli
 
 Thank you for your interest in contributing to Rollout CLI! This document provides guidelines for contributing to the project.
 
@@ -126,7 +126,7 @@ Please be respectful and constructive in all interactions. We aim to create a we
 Feel free to reach out:
 
 - Open an issue for questions
-- Email: hello@rollout.sh
-- Website: https://rollout.sh
+- Email: hello@rollout.run
+- Website: https://rollout.run
 
 Thank you for contributing! 🚀

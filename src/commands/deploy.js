@@ -206,7 +206,7 @@ async function saveLocalTracking(folderPath, project, deployment, filesToDeploy)
       id: deployment.deployment?.id || `deployment-${Date.now()}`,
       version: deployment.deployment?.version || 'unknown',
       status: 'success',
-      url: deployment.deployment_url || `https://${project.slug}.${process.env.ROLLOUT_DOMAIN || 'rollout.sh'}`,
+      url: deployment.deployment_url || `https://${project.slug}.${process.env.ROLLOUT_DOMAIN || 'rollout.run'}`,
       deployedAt: new Date().toISOString(),
       files: filesToDeploy.length,
       size: formattedSize

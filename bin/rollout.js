@@ -22,7 +22,7 @@ const program = new Command();
 
 program
   .name('rollout')
-  .description('A CLI for deploying static sites to rollout.sh')
+  .description('A CLI for deploying static sites to rollout.run')
   .version(packageJson.version);
 
 // Add commands
