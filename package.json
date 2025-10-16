@@ -1,6 +1,6 @@
 {
   "name": "@rollout-run/cli",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A CLI for deploying static sites to rollout.run",
   "main": "bin/rollout.js",
   "bin": {

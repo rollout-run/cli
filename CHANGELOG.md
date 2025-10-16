@@ -1,3 +1,9 @@
+## 0.2.1 (2025-10-16)
+
+### Fix
+
+- improved data display of commands
+
 ## 0.2.0 (2025-10-14)
 
 ### Fix
