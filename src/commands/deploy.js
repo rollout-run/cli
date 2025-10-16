@@ -110,8 +110,8 @@ deployCommand
         
         deploySpinner.succeed('Deployment successful!');
         
-        // Save local tracking information
-        await saveLocalTracking(folderPath, project, deployment, filesToDeploy);
+        // Save project config for tracking
+        await saveProjectConfig(folderPath, project);
         
         console.log(chalk.green('\n✓ Deployment completed successfully!'));
         console.log(chalk.gray(`Project URL: ${api.getProjectUrl(project.slug)}`));
@@ -173,18 +173,15 @@ function isIgnoredFile(filename) {
   return ignoredExtensions.includes(ext) || ignoredFiles.includes(filename);
 }
 
-async function saveLocalTracking(folderPath, project, deployment, filesToDeploy) {
+// Save project config for tracking (without deployments.json)
+async function saveProjectConfig(folderPath, project) {
   try {
     const rolloutDir = path.join(folderPath, '.rollout');
     
     // Ensure .rollout directory exists
     await fs.ensureDir(rolloutDir);
     
-    // Calculate total size
-    const totalSize = filesToDeploy.reduce((sum, file) => sum + file.size, 0);
-    const formattedSize = formatBytes(totalSize);
-    
-    // Save project config
+    // Save project config only
     const configPath = path.join(rolloutDir, 'config.json');
     const config = {
       projectId: project.id,
@@ -194,36 +191,9 @@ async function saveLocalTracking(folderPath, project, deployment, filesToDeploy)
     };
     await fs.writeJson(configPath, config, { spaces: 2 });
     
-    // Load existing deployments or create new array
-    const deploymentsPath = path.join(rolloutDir, 'deployments.json');
-    let deployments = [];
-    if (await fs.pathExists(deploymentsPath)) {
-      deployments = await fs.readJson(deploymentsPath);
-    }
-    
-    // Add new deployment record
-    const deploymentRecord = {
-      id: deployment.deployment?.id || `deployment-${Date.now()}`,
-      version: deployment.deployment?.version || 'unknown',
-      status: 'success',
-      url: deployment.deployment_url || `https://${project.slug}.${process.env.ROLLOUT_DOMAIN || 'rollout.run'}`,
-      deployedAt: new Date().toISOString(),
-      files: filesToDeploy.length,
-      size: formattedSize
-    };
-    
-    deployments.unshift(deploymentRecord); // Add to beginning
-    
-    // Keep only last 50 deployments
-    if (deployments.length > 50) {
-      deployments = deployments.slice(0, 50);
-    }
-    
-    await fs.writeJson(deploymentsPath, deployments, { spaces: 2 });
-    
   } catch (error) {
-    // Don't fail deployment if local tracking fails
-    console.log(chalk.yellow('⚠️  Warning: Could not save local tracking information'));
+    // Don't fail deployment if config save fails
+    console.log(chalk.yellow('⚠️  Warning: Could not save project configuration'));
   }
 }
 

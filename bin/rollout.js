@@ -22,7 +22,7 @@ const program = new Command();
 
 program
   .name('rollout')
-  .description('A CLI for deploying static sites to rollout.run')
+  .description('Deploy static sites to rollout.run (deploy is the default action)')
   .version(packageJson.version);
 
 // Add commands
@@ -34,6 +34,41 @@ program.addCommand(listCommand);
 program.addCommand(statusCommand);
 program.addCommand(historyCommand);
 program.addCommand(domainCommand);
+
+// Set deploy as default action when no subcommand is provided
+program.action(async (options) => {
+  // Check if help was requested
+  if (process.argv.includes('--help') || process.argv.includes('-h')) {
+    program.help();
+    return;
+  }
+  
+  // Check if version was requested
+  if (process.argv.includes('--version') || process.argv.includes('-V')) {
+    console.log(packageJson.version);
+    return;
+  }
+  
+  // Default to deploy command
+  console.log(chalk.blue('🚀 Running deployment...'));
+  
+  // Parse arguments for deploy command
+  const args = process.argv.slice(2); // Remove 'rollout' from args
+  const deployArgs = ['.']; // Default folder
+  
+  // Add any additional arguments that might be deploy-related
+  if (args.length > 0 && !args.includes('--help') && !args.includes('-h')) {
+    deployArgs[0] = args[0]; // Use first arg as folder if provided
+  }
+  
+  // Run deploy command by calling it directly
+  try {
+    await deployCommand.parseAsync(['deploy', ...deployArgs]);
+  } catch (error) {
+    console.error(chalk.red('Error:'), error.message);
+    process.exit(1);
+  }
+});
 
 // Global error handling
 program.exitOverride();

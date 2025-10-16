@@ -182,6 +182,20 @@ class ApiClient {
     }
   }
 
+  async getDeployments(projectId, limit = 10) {
+    try {
+      const response = await this.client.get(`/projects/${projectId}/deployments`, {
+        params: { limit }
+      });
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 401) {
+        throw new Error('Please login first: rollout login');
+      }
+      throw new Error(error.response?.data?.message || 'Failed to fetch deployments');
+    }
+  }
+
   async getDeploymentStatus(projectId, deploymentId) {
     try {
       const response = await this.client.get(`/projects/${projectId}/deployments/${deploymentId}`);
