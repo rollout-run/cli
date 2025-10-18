@@ -12,9 +12,6 @@ deployCommand
   .description('Deploy a static site to Rollout')
   .argument('[folder]', 'Folder to deploy', '.')
   .option('-p, --project <name>', 'Project name (optional, auto-generated Heroku-style)')
-  .option('-d, --domain <domain>', 'Custom domain (optional)')
-  .option('--commit <hash>', 'Git commit hash')
-  .option('--branch <branch>', 'Git branch name')
   .action(async (folder, options) => {
     const api = new ApiClient();
     
@@ -103,10 +100,7 @@ deployCommand
       // Deploy files
       const deploySpinner = ora('Deploying files...').start();
       try {
-        const deployment = await api.deployProject(project.id, filesToDeploy, {
-          commitHash: options.commit,
-          branch: options.branch,
-        });
+        const deployment = await api.deployProject(project.id, filesToDeploy);
         
         deploySpinner.succeed('Deployment successful!');
         

@@ -150,21 +150,13 @@ class ApiClient {
     }
   }
 
-  async deployProject(projectId, files, options = {}) {
+  async deployProject(projectId, files) {
     try {
       const formData = new FormData();
       
       // Add files to form data
       for (const file of files) {
         formData.append('files[]', file.buffer, file.name);
-      }
-      
-      // Add options
-      if (options.commitHash) {
-        formData.append('commit_hash', options.commitHash);
-      }
-      if (options.branch) {
-        formData.append('branch', options.branch);
       }
 
       const response = await this.client.post(`/projects/${projectId}/deploy`, formData, {
