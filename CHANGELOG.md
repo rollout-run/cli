@@ -1,3 +1,9 @@
+## 1.0.0 (2025-10-18)
+
+### Fix
+
+- updated commands. removed psuedo code
+
 ## 0.2.1 (2025-10-16)
 
 ### Fix
